@@ -396,6 +396,124 @@ function obterValorRepetidoCMPC(item: InventoryItem): { valor: number; rodadaCon
   return null;
 }
 
+function CustomAgentDropdown({ value, onChange, options, placeholder = "Selecione o Agente..." }: {
+  value: string;
+  onChange: (val: string) => void;
+  options: any[];
+  placeholder?: string;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const selectedAgent = options.find(a => String(a.pin) === String(value));
+
+  const getInitials = (name: string) => {
+    if (!name) return 'AG';
+    const parts = name.trim().split(' ');
+    if (parts.length >= 2) {
+      return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
+  };
+
+  return (
+    <div className="relative font-sans text-left w-full" ref={dropdownRef}>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full text-xs font-bold p-3 bg-white border border-slate-300 rounded-xl outline-none focus:border-[#3a2573] flex items-center justify-between gap-2 text-slate-800 cursor-pointer shadow-3xs"
+      >
+        <div className="flex items-center gap-2.5 truncate">
+          {selectedAgent ? (
+            <>
+              <div className="w-7 h-7 rounded-full bg-[#3a2573] text-white flex items-center justify-center text-[10px] font-black shrink-0">
+                {getInitials(selectedAgent.nome)}
+              </div>
+              <div className="truncate text-left">
+                <span className="block truncate">{selectedAgent.nome}</span>
+                <span className="block text-[9px] text-slate-400 font-mono font-normal">PIN: {selectedAgent.pin}</span>
+              </div>
+            </>
+          ) : (
+            <span className="text-slate-400 font-semibold">{placeholder}</span>
+          )}
+        </div>
+        <div className="flex items-center gap-1.5 shrink-0">
+          {selectedAgent?.temBiometria && (
+            <span title="Biometria Ativa" className="text-emerald-500 inline-flex items-center">
+              <Scan className="w-4 h-4" />
+            </span>
+          )}
+          <span className="text-slate-400 text-xs">▼</span>
+        </div>
+      </button>
+
+      {isOpen && (
+        <ul className="absolute left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 max-h-60 overflow-y-auto divide-y divide-slate-100 py-1">
+          <li
+            onClick={() => {
+              onChange('');
+              setIsOpen(false);
+            }}
+            className="px-3 py-2.5 hover:bg-slate-50 cursor-pointer text-xs font-semibold text-slate-400 flex items-center gap-2"
+          >
+            <span>-- Não Atribuído / Limpar --</span>
+          </li>
+          {options.map((agent) => {
+            const isSelected = String(agent.pin) === String(value);
+            return (
+              <li
+                key={agent.pin}
+                onClick={() => {
+                  onChange(agent.pin);
+                  setIsOpen(false);
+                }}
+                className={`px-3 py-2.5 hover:bg-indigo-50/60 cursor-pointer flex items-center justify-between gap-2 transition-colors ${
+                  isSelected ? 'bg-indigo-50/80 font-bold text-[#3a2573]' : 'text-slate-700'
+                }`}
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-7 h-7 rounded-full bg-slate-800 text-white flex items-center justify-center text-[10px] font-black shrink-0 shadow-3xs">
+                    {getInitials(agent.nome)}
+                  </div>
+                  <div className="min-w-0 text-left">
+                    <p className="text-xs font-bold text-slate-800 truncate">{agent.nome}</p>
+                    <p className="text-[9px] text-slate-400 font-mono">PIN: {agent.pin} {agent.cargo ? `• ${agent.cargo}` : ''}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  {agent.temBiometria ? (
+                    <span className="inline-flex items-center gap-1 text-[9px] font-black text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200" title="Biometria Ativa">
+                      <Scan className="w-3.5 h-3.5 text-emerald-500" />
+                      <span>Biometria Ativa</span>
+                    </span>
+                  ) : (
+                    <span className="text-[9px] text-slate-400 font-semibold bg-slate-100 px-2.5 py-1 rounded-full">
+                      Sem Biometria
+                    </span>
+                  )}
+                  {isSelected && <Check className="w-4 h-4 text-[#3a2573]" />}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 interface InventoryPortalProps {
   onBackToHub: () => void;
   allowedPins: string[];
@@ -896,8 +1014,7 @@ export default function InventoryPortal({ onBackToHub, allowedPins, fullAllowedP
       // 1. Pega usuários com biometria facial cadastrada na tabela usuarios
       const { data: rostos, error: erroRostos } = await supabase
         .from('usuarios')
-        .select('id, id_biometria_vinculada, nome, face_descriptor')
-        .not('face_descriptor', 'is', null);
+        .select('id, id_biometria_vinculada, nome, face_descriptor, face_cadastrado_em');
 
       if (erroRostos) {
         console.warn('Aviso ao carregar rostos do Supabase:', erroRostos);
@@ -906,7 +1023,7 @@ export default function InventoryPortal({ onBackToHub, allowedPins, fullAllowedP
       // 2. Pega todos os registros de permissão e PINs na tabela usuarios_permissoes
       const { data: permissoes, error: erroPermissoes } = await supabase
         .from('usuarios_permissoes')
-        .select('id, pin, nome, cargo');
+        .select('id, pin, nome, cargo, face_cadastrado_em');
 
       if (erroPermissoes) {
         console.warn('Aviso ao carregar permissoes do Supabase:', erroPermissoes);
@@ -923,7 +1040,10 @@ export default function InventoryPortal({ onBackToHub, allowedPins, fullAllowedP
             String(r.id) === String(p.id) ||
             (r.nome && p.nome && r.nome.trim().toUpperCase() === p.nome.trim().toUpperCase())
           );
-          const temBio = !!(vinculadoRosto && vinculadoRosto.face_descriptor);
+          const temBio = !!(
+            (vinculadoRosto && (vinculadoRosto.face_descriptor || vinculadoRosto.face_cadastrado_em)) || 
+            p.face_cadastrado_em
+          );
 
           agentesMap.set(String(p.pin), {
             id: p.id || p.pin,
@@ -931,6 +1051,7 @@ export default function InventoryPortal({ onBackToHub, allowedPins, fullAllowedP
             nome: p.nome || vinculadoRosto?.nome || 'Agente CMPC',
             cargo: p.cargo || 'Almoxarife',
             temBiometria: temBio,
+            faceCadastradoEm: p.face_cadastrado_em || vinculadoRosto?.face_cadastrado_em || null,
             statusBio: temBio ? '🟢 Rosto Cadastrado (Biometria Ativa)' : '⚪ Sem Biometria'
           });
         }
@@ -943,13 +1064,15 @@ export default function InventoryPortal({ onBackToHub, allowedPins, fullAllowedP
           : (r.id && String(r.id).length <= 6 ? String(r.id) : null);
 
         if (pinFallback && !agentesMap.has(pinFallback)) {
+          const temBio = !!(r.face_descriptor || r.face_cadastrado_em);
           agentesMap.set(pinFallback, {
             id: r.id || r.id_biometria_vinculada,
             pin: pinFallback,
             nome: r.nome || 'Agente CMPC',
             cargo: 'Almoxarife',
-            temBiometria: true,
-            statusBio: '🟢 Rosto Cadastrado (Biometria Ativa)'
+            temBiometria: temBio,
+            faceCadastradoEm: r.face_cadastrado_em || null,
+            statusBio: temBio ? '🟢 Rosto Cadastrado (Biometria Ativa)' : '⚪ Sem Biometria'
           });
         }
       });
