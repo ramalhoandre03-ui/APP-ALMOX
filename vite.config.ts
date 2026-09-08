@@ -18,6 +18,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
+    minify: 'esbuild',
     chunkSizeWarningLimit: 2000,
     rollupOptions: {
       output: {
@@ -35,7 +36,7 @@ export default defineConfig({
             if (id.includes('xlsx')) {
               return 'vendor-xlsx';
             }
-            if (id.includes('jspdf') || id.includes('html2canvas') || id.includes('html-to-image')) {
+            if (id.includes('jspdf') || id.includes('html2canvas') || id.includes('html-to-image') || id.includes('html2canvas-pro')) {
               return 'vendor-pdfgen';
             }
             if (id.includes('recharts') || id.includes('d3')) {
@@ -50,6 +51,7 @@ export default defineConfig({
             if (id.includes('@supabase')) {
               return 'vendor-supabase';
             }
+            return 'vendor-misc';
           }
         },
       },
