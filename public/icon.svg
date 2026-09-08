@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#020617"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    
+    <!-- Indigo to Violet Gradient -->
+    <linearGradient id="primaryGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6d28d9"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+    
+    <!-- Emerald Accent Gradient -->
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+
+    <!-- Metallic/Slate Contrast Gradient -->
+    <linearGradient id="metalGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+
+    <!-- Soft Ambient Light Glow -->
+    <radialGradient id="ambientGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#4f46e5" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#4f46e5" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Base App Slate Background (Rounded Rect for smooth launcher frame) -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)"/>
+  
+  <!-- Ambient Radiating Glow -->
+  <circle cx="256" cy="256" r="240" fill="url(#ambientGlow)"/>
+
+  <!-- Outer Protective Industrial Border Ring (Gears and Logistics) -->
+  <circle cx="256" cy="256" r="180" fill="none" stroke="url(#metalGrad)" stroke-width="12" stroke-dasharray="12 8"/>
+  <circle cx="256" cy="256" r="162" fill="none" stroke="url(#primaryGrad)" stroke-width="4" opacity="0.6"/>
+
+  <!-- Dynamic Industrial Assembly: Stylized Hexagonal Nut and Factory Teeth -->
+  <g transform="translate(256, 256)">
+    <!-- Hexagon Outer Shape representing Solidity & Infrastructure -->
+    <polygon points="0,-110 95,-55 95,55 0,110 -95,55 -95,-55" fill="url(#metalGrad)" filter="drop-shadow(0px 8px 16px rgba(0,0,0,0.4))"/>
+    
+    <!-- Inner glowing gear ring -->
+    <circle cx="0" cy="0" r="70" fill="url(#bgGrad)" stroke="url(#accentGrad)" stroke-width="8"/>
+    
+    <!-- Industrial Structure / Warehouse Roof silhouette in the center -->
+    <path d="M -40,-10 L -40,30 L 40,30 L 40,-10 L 20,10 L 0,-15 L -20,10 Z" fill="url(#primaryGrad)"/>
+    
+    <!-- Connected logistics check nodes -->
+    <circle cx="0" cy="-15" r="10" fill="#10b981"/>
+    <circle cx="-40" cy="-10" r="8" fill="#4f46e5"/>
+    <circle cx="40" cy="-10" r="8" fill="#4f46e5"/>
+    
+    <!-- Futuristic laser connection lines -->
+    <line x1="-40" y1="-10" x2="0" y2="-15" stroke="#10b981" stroke-width="3" opacity="0.8"/>
+    <line x1="40" y1="-10" x2="0" y2="-15" stroke="#10b981" stroke-width="3" opacity="0.8"/>
+  </g>
+  
+  <!-- Text Brand "CMPC" inside a solid technical badge -->
+  <g transform="translate(256, 410)">
+    <rect x="-80" y="-22" width="160" height="44" rx="12" fill="#0f172a" stroke="url(#accentGrad)" stroke-width="2" />
+    <text x="0" y="8" font-family="'Inter', sans-serif" font-size="22" font-weight="900" fill="#f8fafc" letter-spacing="4" text-anchor="middle">CMPC</text>
+  </g>
+</svg>

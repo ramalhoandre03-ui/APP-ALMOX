@@ -1,0 +1,118 @@
+{
+  "reports": [],
+  "projectSites": [
+    {
+      "id": "site-rnest",
+      "name": "Refinaria Abreu e Lima (RNEST)",
+      "location": "Ipojuca - PE",
+      "clientCompany": "Petrobras",
+      "managerName": "Eng. Ricardo Assis"
+    },
+    {
+      "id": "site-camacari",
+      "name": "Polo Petroquímico Braskem",
+      "location": "Camaçari - BA",
+      "clientCompany": "Braskem S.A.",
+      "managerName": "Eng. Carla Vasconcelos"
+    },
+    {
+      "id": "site-tubarao",
+      "name": "Usina Siderúrgica Tubarão",
+      "location": "Vitória - ES",
+      "clientCompany": "ArcelorMittal",
+      "managerName": "Eng. Marcos Santos"
+    },
+    {
+      "id": "site-carajas",
+      "name": "Frente de Mineração Carajás",
+      "location": "Parauapebas - PA",
+      "clientCompany": "Vale S.A.",
+      "managerName": "Eng. Sofia Albuquerque"
+    },
+    {
+      "id": "site-suzano",
+      "name": "Complexo Industrial de Celulose",
+      "location": "Imperatriz - MA",
+      "clientCompany": "Suzano Celulose",
+      "managerName": "Eng. Thiago Gouveia"
+    }
+  ],
+  "predefinedUniforms": [
+    {
+      "id": "uni-001",
+      "name": "Camisa Azul",
+      "sizes": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ]
+    },
+    {
+      "id": "uni-002",
+      "name": "Camisa Cinza",
+      "sizes": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ]
+    },
+    {
+      "id": "uni-003",
+      "name": "Calça Brim Cinza",
+      "sizes": [
+        "38",
+        "40",
+        "42",
+        "44",
+        "46",
+        "48"
+      ]
+    },
+    {
+      "id": "uni-004",
+      "name": "Calça Jeans",
+      "sizes": [
+        "38",
+        "40",
+        "42",
+        "44",
+        "46",
+        "48"
+      ]
+    },
+    {
+      "id": "uni-005",
+      "name": "Botas de Mecânico",
+      "sizes": [
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ]
+    },
+    {
+      "id": "uni-006",
+      "name": "Botas de Eletricista",
+      "sizes": [
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ]
+    }
+  ],
+  "allowedPins": [
+    "04632076376"
+  ],
+  "extraHoursForms": []
+}

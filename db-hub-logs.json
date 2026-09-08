@@ -1,0 +1,72 @@
+[
+  {
+    "type": "click",
+    "destino": "Portal de Inventário CMPC Industrial",
+    "url": "/app/inventarios",
+    "timestamp": "2026-07-16T15:17:33.195Z",
+    "usuario": "admin@cmpc.com.br"
+  },
+  {
+    "type": "click",
+    "destino": "Atendimento de Requisições",
+    "url": "/app/atendimento-requisicoes",
+    "timestamp": "2026-07-16T15:22:13.372Z",
+    "usuario": "admin@cmpc.com.br"
+  },
+  {
+    "type": "click",
+    "destino": "Atendimento de Requisições",
+    "url": "/app/atendimento-requisicoes",
+    "timestamp": "2026-07-16T17:36:16.223Z",
+    "usuario": "admin@cmpc.com.br"
+  },
+  {
+    "type": "click",
+    "destino": "Atendimento de Requisições",
+    "url": "/app/atendimento-requisicoes",
+    "timestamp": "2026-07-16T18:11:01.105Z",
+    "usuario": "admin@cmpc.com.br"
+  },
+  {
+    "type": "click",
+    "destino": "Atendimento de Requisições",
+    "url": "/app/atendimento-requisicoes",
+    "timestamp": "2026-07-16T18:17:29.926Z",
+    "usuario": "admin@cmpc.com.br"
+  },
+  {
+    "type": "click",
+    "destino": "Atendimento de Requisições",
+    "url": "/app/atendimento-requisicoes",
+    "timestamp": "2026-07-16T18:18:49.286Z",
+    "usuario": "admin@cmpc.com.br"
+  },
+  {
+    "type": "click",
+    "destino": "Atendimento de Requisições",
+    "url": "/app/atendimento-requisicoes",
+    "timestamp": "2026-07-16T18:28:12.720Z",
+    "usuario": "admin@cmpc.com.br"
+  },
+  {
+    "type": "click",
+    "destino": "Previsão de Horas",
+    "url": "/app/previsao-he",
+    "timestamp": "2026-07-16T18:31:34.273Z",
+    "usuario": "admin@cmpc.com.br"
+  },
+  {
+    "type": "click",
+    "destino": "Atendimento de Requisições",
+    "url": "/app/atendimento-requisicoes",
+    "timestamp": "2026-07-16T18:33:39.659Z",
+    "usuario": "admin@cmpc.com.br"
+  },
+  {
+    "type": "click",
+    "destino": "Atendimento de Requisições",
+    "url": "/app/atendimento-requisicoes",
+    "timestamp": "2026-07-16T18:51:18.252Z",
+    "usuario": "admin@cmpc.com.br"
+  }
+]

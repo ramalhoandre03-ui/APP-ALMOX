@@ -1,0 +1,297 @@
+{
+  "entities": {
+    "HealthCheck": {
+      "title": "HealthCheck",
+      "description": "Diagnostic health check runs",
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO timestamp of the health check"
+        },
+        "status": {
+          "type": "string",
+          "description": "Health check status message"
+        }
+      },
+      "required": [
+        "timestamp",
+        "status"
+      ]
+    },
+    "HubLog": {
+      "title": "HubLog",
+      "description": "System event audit trail",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "click",
+            "session_start",
+            "hub_update"
+          ],
+          "description": "The category of the captured event"
+        },
+        "destino": {
+          "type": "string",
+          "description": "Name of the target link or system destination"
+        },
+        "url": {
+          "type": "string",
+          "description": "Target address or identifier"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO timestamp of the interaction"
+        },
+        "usuario": {
+          "type": "string",
+          "description": "User identification (User ID or 'anon')"
+        },
+        "itemName": {
+          "type": "string",
+          "description": "Identifies the element updated inside the hub database"
+        },
+        "valAnterior": {
+          "type": "string",
+          "description": "Previous state value"
+        },
+        "valNovo": {
+          "type": "string",
+          "description": "Newly applied state value"
+        }
+      },
+      "required": [
+        "type",
+        "timestamp",
+        "usuario"
+      ]
+    },
+    "Inventory": {
+      "title": "Inventory",
+      "description": "CMPC Inventory document",
+      "type": "object",
+      "properties": {
+        "tipo": { "type": "string" },
+        "data": { "type": "string" },
+        "responsavel": { "type": "string" },
+        "status": { "type": "string" },
+        "totalItens": { "type": "number" },
+        "itensContados": { "type": "number" },
+        "progresso": { "type": "number" },
+        "createdAt": { "type": "string" },
+        "atribuicoes": {
+          "type": "array",
+          "description": "Storekeeper assignments by stock group"
+        }
+      }
+    },
+    "InventoryItem": {
+      "title": "InventoryItem",
+      "description": "Item of an inventory being tracked",
+      "type": "object",
+      "properties": {
+        "inventarioId": { "type": "string" },
+        "codigo": { "type": "string" },
+        "descricao": { "type": "string" },
+        "unidade": { "type": "string" },
+        "statusContagem": { "type": "string" },
+        "contagemAtualAtiva": { "type": "number" },
+        "saldoSistema": { "type": "number" },
+        "desvioQtd": { "type": "number" },
+        "desvioValor": { "type": "number" },
+        "valorUnitario": { "type": "number" },
+        "statusDivergencia": { "type": "string" },
+        "resultadoInvestigacao": { "type": "string" },
+        "planoAcao": { "type": "string" },
+        "grupo": { "type": "string" }
+      }
+    },
+    "Count": {
+      "title": "Count",
+      "description": "Single counting recorded by Almoxarife",
+      "type": "object",
+      "properties": {
+        "itemInventarioId": { "type": "string" },
+        "inventarioId": { "type": "string" },
+        "numeroContagem": { "type": "number" },
+        "quantidade": { "type": "number" },
+        "contador": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "grupoEstoque": { "type": "string" }
+      }
+    },
+    "ClosingReport": {
+      "title": "ClosingReport",
+      "description": "Final closing report with signature",
+      "type": "object",
+      "properties": {
+        "inventarioId": { "type": "string" },
+        "dataFechamento": { "type": "string" },
+        "tipo": { "type": "string" },
+        "totalItens": { "type": "number" },
+        "valorTotalDivergencias": { "type": "number" },
+        "acuracidade": { "type": "number" },
+        "assertividade": { "type": "number" },
+        "assinadoPor": { "type": "string" },
+        "cargoResponsavel": { "type": "string" },
+        "dataAssinatura": { "type": "string" }
+      }
+    },
+    "AppUser": {
+      "title": "AppUser",
+      "description": "Registered operator / user",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "nome": { "type": "string" },
+        "pin": { "type": "string" },
+        "cargo": { "type": "string" },
+        "timestamp": { "type": "string" }
+      }
+    },
+    "AllowedPin": {
+      "title": "AllowedPin",
+      "description": "Authorized PIN with user security meta",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "pin": { "type": "string" },
+        "nome": { "type": "string" },
+        "usuario": { "type": "string" },
+        "cargo": { "type": "string" },
+        "timestamp": { "type": "string" }
+      }
+    },
+    "Requisition": {
+      "title": "Requisition",
+      "description": "RM Requisition in open status for storekeeper service",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "rmNumber": { "type": "string" },
+        "material": { "type": "string" },
+        "quantidade": { "type": "number" },
+        "unidade": { "type": "string" },
+        "setor": { "type": "string" },
+        "solicitante": { "type": "string" },
+        "dataSolicitacao": { "type": "string" },
+        "status": { "type": "string", "enum": ["Pendente", "Em Atendimento", "Concluida"] },
+        "atribuidoId": { "type": "string" },
+        "atribuidoNome": { "type": "string" },
+        "atribuidoTimestamp": { "type": "string" },
+        "concluidoTimestamp": { "type": "string" },
+        "observacoes": { "type": "string" },
+        "origem": { "type": "string", "enum": ["upload", "simulado"] },
+        "createdTimestamp": { "type": "string" }
+      }
+    },
+    "Avatar": {
+      "title": "Avatar",
+      "description": "Operator profile picture as Base64 JPEG string",
+      "type": "object",
+      "properties": {
+        "photoBase64": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": [
+        "photoBase64",
+        "updatedAt"
+      ]
+    },
+    "Tratativa": {
+      "title": "Tratativa",
+      "description": "Treatment state of an RM to survive SGI Python overrides",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "rmNumber": { "type": "string" },
+        "status": { "type": "string" },
+        "atribuidoId": { "type": "string" },
+        "atribuidoNome": { "type": "string" }
+      }
+    },
+    "NotaFiscal": {
+      "title": "NotaFiscal",
+      "description": "Nota Fiscal structure parsed from ERP",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "dataEntrada": { "type": "string" },
+        "nroDoc": { "type": "string" },
+        "serie": { "type": "string" },
+        "fornecedor": { "type": "string" },
+        "valorNF": { "type": "string" },
+        "cnpj": { "type": "string" },
+        "vencimento": { "type": "string" },
+        "situacao": { "type": "string" },
+        "atraso": { "type": "string" },
+        "areaSetor": { "type": "string" }
+      },
+      "required": [
+        "id",
+        "dataEntrada",
+        "nroDoc",
+        "fornecedor",
+        "valorNF"
+      ]
+    }
+  },
+  "firestore": {
+    "/health_check/{checkId}": {
+      "schema": "HealthCheck",
+      "description": "Collection of diagnostic probe documents"
+    },
+    "/hub_logs/{logId}": {
+      "schema": "HubLog",
+      "description": "Central audit and usage logging collection"
+    },
+    "/inventarios/{id}": {
+      "schema": "Inventory",
+      "description": "List of inventories"
+    },
+    "/itens_inventario/{id}": {
+      "schema": "InventoryItem",
+      "description": "Items associated with inventories"
+    },
+    "/contagens/{id}": {
+      "schema": "Count",
+      "description": "Individual stock counts"
+    },
+    "/relatorios_fechamento/{id}": {
+      "schema": "ClosingReport",
+      "description": "Signed closing forms"
+    },
+    "/usuarios/{id}": {
+      "schema": "AppUser",
+      "description": "Registered operators collection"
+    },
+    "/allowed_pins/{id}": {
+      "schema": "AllowedPin",
+      "description": "Authorized system PINs with user metadata"
+    },
+    "/requisicoes_rm/{id}": {
+      "schema": "Requisition",
+      "description": "Open RMs and their real-time handling status"
+    },
+    "/tratativas_requisicoes/{id}": {
+      "schema": "Tratativa",
+      "description": "Treatment state of an RM to survive SGI Python overrides"
+    },
+    "/historico_requisicoes/{id}": {
+      "schema": "Requisition",
+      "description": "Archive of processed, completed, or reset RMs stored permanently"
+    },
+    "/avatars/{id}": {
+      "schema": "Avatar",
+      "description": "Profile picture as Base64 JPEG string for storekeeper operators"
+    },
+    "/notas_fiscais/{id}": {
+      "schema": "NotaFiscal",
+      "description": "Collection of NFs and operational diligence statuses"
+    }
+  }
+}

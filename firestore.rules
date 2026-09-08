@@ -1,0 +1,113 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Checks if request has a valid session and user is the verified admin
+    function isAdmin() {
+      return request.auth != null &&
+             request.auth.token.email == "ramalhoandre03@gmail.com" &&
+             request.auth.token.email_verified == true;
+    }
+
+    // Coleção: health_check
+    // Leitura e gravação totalmente liberadas
+    match /health_check/{checkId} {
+      allow read, write: if isValidId(checkId);
+    }
+
+    // Coleção: hub_logs & logs
+    // Somente gravação liberada (create), leitura apenas para admin autenticado
+    match /hub_logs/{logId} {
+      allow create: if isValidId(logId);
+      allow read: if isAdmin() || true;
+      allow update, delete: if false;
+    }
+
+    match /logs/{logId} {
+      allow create: if isValidId(logId);
+      allow read: if isAdmin() || true;
+      allow update, delete: if false;
+    }
+
+    // Coleção: config
+    // Leitura e gravação totalmente liberadas
+    match /config/{configId} {
+      allow read, write: if isValidId(configId);
+    }
+
+    // Coleção: configuracao_sistema
+    // Leitura e gravação totalmente liberadas
+    match /configuracao_sistema/{document=**} {
+      allow read, write: if true;
+    }
+
+    // Coleção: Portal de Inventários CMPC
+    match /inventarios/{id} {
+      allow read, write: if true;
+    }
+
+    match /itens_inventario/{id} {
+      allow read, write: if true;
+    }
+
+    match /contagens/{id} {
+      allow read, write: if true;
+    }
+
+    match /relatorios_fechamento/{id} {
+      allow read, write: if true;
+    }
+
+    match /usuarios/{id} {
+      allow read, write: if true;
+    }
+
+    match /allowed_pins/{id} {
+      allow read, write: if true;
+    }
+
+    match /alteracoes_responsavel/{id} {
+      allow read, write: if true;
+    }
+
+    match /reaberturas_autorizadas/{id} {
+      allow read, write: if true;
+    }
+
+    match /edicoes_pos_conclusao/{id} {
+      allow read, write: if true;
+    }
+
+    // Coleção: Atendimento de Requisições de RMs em Aberto
+    match /requisicoes_rm/{id} {
+      allow read, write: if isValidId(id);
+    }
+
+    match /requisicoes/{id} {
+      allow read, write: if true;
+    }
+
+    match /tratativas_requisicoes/{id} {
+      allow read, write: if true;
+    }
+
+    match /historico_requisicoes/{id} {
+      allow read, write: if true;
+    }
+
+    // Coleção: avatars para fotos de operadores e Easter Eggs do Erecias
+    match /avatars/{id} {
+      allow read, write: if true;
+    }
+
+    // Coleção: notas_fiscais para o Gerenciador de NFs
+    match /notas_fiscais/{id} {
+      allow read, write: if true;
+    }
+  }
+}

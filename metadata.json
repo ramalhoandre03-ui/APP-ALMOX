@@ -1,0 +1,6 @@
+{
+  "name": "Painel de Almoxarifado Industrial",
+  "description": "Painel para almoxarifes das frentes de obras realizarem lançamentos diários (turnos, efetivo, uniformes, equipamentos e consumo) que alimentam a base consolidada do almoxarifado central.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
