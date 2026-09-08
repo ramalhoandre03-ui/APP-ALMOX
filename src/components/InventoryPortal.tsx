@@ -888,50 +888,92 @@ export default function InventoryPortal({ onBackToHub, allowedPins, fullAllowedP
     { id: '1019', nome: 'EDUARDO NUNES DOS SANTOS JUNIOR', pin: '1019', cargo: 'Auxiliar' }
   ];
 
-  // Lista de Agentes de Contagem com Biometria Facial Cadastrada (Supabase)
+  // Lista de Agentes de Contagem com Biometria Facial Cadastrada e PINs (Supabase)
   const [listaAgentes, setListaAgentes] = useState<any[]>([]);
 
   const carregarAgentesDisponiveis = useCallback(async () => {
     try {
-      // 1. Pega todo mundo que tem rosto cadastrado
+      // 1. Pega usuários com biometria facial cadastrada na tabela usuarios
       const { data: rostos, error: erroRostos } = await supabase
         .from('usuarios')
-        .select('id_biometria_vinculada, nome')
+        .select('id, id_biometria_vinculada, nome, face_descriptor')
         .not('face_descriptor', 'is', null);
 
-      if (erroRostos) throw erroRostos;
+      if (erroRostos) {
+        console.warn('Aviso ao carregar rostos do Supabase:', erroRostos);
+      }
 
-      const idsValidos = (rostos || [])
-        .map((r: any) => r.id_biometria_vinculada)
-        .filter((id: any) => id && String(id).trim() !== '');
-
-      if (idsValidos.length === 0) return setListaAgentes([]);
-
-      // 2. Pega os PINs reais APENAS dessas pessoas
+      // 2. Pega todos os registros de permissão e PINs na tabela usuarios_permissoes
       const { data: permissoes, error: erroPermissoes } = await supabase
         .from('usuarios_permissoes')
-        .select('id, pin')
-        .in('id', idsValidos);
+        .select('id, pin, nome, cargo');
 
-      if (erroPermissoes) throw erroPermissoes;
+      if (erroPermissoes) {
+        console.warn('Aviso ao carregar permissoes do Supabase:', erroPermissoes);
+      }
 
-      // 3. Costura as duas informações (Merge)
-      const agentesComPinReal = (rostos || [])
-        .map((rosto: any) => {
-          const dadosPermissao = (permissoes || []).find((p: any) => p.id === rosto.id_biometria_vinculada);
-          return {
-            id: rosto.id_biometria_vinculada,
-            nome: rosto.nome,
-            pin: dadosPermissao ? dadosPermissao.pin : null 
-          };
-        })
-        .filter((agente: any) => agente.pin !== null) 
-        .sort((a: any, b: any) => a.nome.localeCompare(b.nome));
+      // 3. Front-end Join robusto: Cruza Nome, PIN e Status da Biometria
+      const agentesMap = new Map();
 
-      setListaAgentes(agentesComPinReal);
+      // Mapear por PINs e Permissões
+      (permissoes || []).forEach((p: any) => {
+        if (p.pin) {
+          const vinculadoRosto = (rostos || []).find((r: any) => 
+            String(r.id_biometria_vinculada) === String(p.id) || 
+            String(r.id) === String(p.id) ||
+            (r.nome && p.nome && r.nome.trim().toUpperCase() === p.nome.trim().toUpperCase())
+          );
+          const temBio = !!(vinculadoRosto && vinculadoRosto.face_descriptor);
+
+          agentesMap.set(String(p.pin), {
+            id: p.id || p.pin,
+            pin: String(p.pin),
+            nome: p.nome || vinculadoRosto?.nome || 'Agente CMPC',
+            cargo: p.cargo || 'Almoxarife',
+            temBiometria: temBio,
+            statusBio: temBio ? '🟢 Rosto Cadastrado (Biometria Ativa)' : '⚪ Sem Biometria'
+          });
+        }
+      });
+
+      // Incluir rostos cadastrados que tenham ID ou vínculo compatível com PIN
+      (rostos || []).forEach((r: any) => {
+        const pinFallback = r.id_biometria_vinculada && String(r.id_biometria_vinculada).length <= 6 
+          ? String(r.id_biometria_vinculada) 
+          : (r.id && String(r.id).length <= 6 ? String(r.id) : null);
+
+        if (pinFallback && !agentesMap.has(pinFallback)) {
+          agentesMap.set(pinFallback, {
+            id: r.id || r.id_biometria_vinculada,
+            pin: pinFallback,
+            nome: r.nome || 'Agente CMPC',
+            cargo: 'Almoxarife',
+            temBiometria: true,
+            statusBio: '🟢 Rosto Cadastrado (Biometria Ativa)'
+          });
+        }
+      });
+
+      let resultadoFinal = Array.from(agentesMap.values());
+
+      if (resultadoFinal.length === 0) {
+        resultadoFinal = PREDEFINED_ALMOXARIFES.map(p => ({
+          ...p,
+          temBiometria: false,
+          statusBio: '⚪ Predefinido'
+        }));
+      }
+
+      resultadoFinal.sort((a: any, b: any) => a.nome.localeCompare(b.nome));
+      setListaAgentes(resultadoFinal);
 
     } catch (err) {
       console.error("Erro ao cruzar biometria com PINs reais:", err);
+      setListaAgentes(PREDEFINED_ALMOXARIFES.map(p => ({
+        ...p,
+        temBiometria: false,
+        statusBio: '⚪ Predefinido'
+      })));
     }
   }, []);
 
@@ -944,10 +986,10 @@ export default function InventoryPortal({ onBackToHub, allowedPins, fullAllowedP
     if (listaAgentes.length > 0) {
       return listaAgentes;
     }
-    const list = [...PREDEFINED_ALMOXARIFES];
+    const list = [...PREDEFINED_ALMOXARIFES.map(p => ({ ...p, temBiometria: false, statusBio: '⚪ Predefinido' }))];
     usuarios.forEach((u) => {
       if (u.cargo !== 'Coordenador' && u.cargo !== 'Auditor' && !list.some((p) => p.pin === u.pin)) {
-        list.push({ id: u.pin, nome: u.nome, pin: u.pin, cargo: u.cargo || 'Almoxarife' });
+        list.push({ id: u.pin, nome: u.nome, pin: u.pin, cargo: u.cargo || 'Almoxarife', temBiometria: false, statusBio: '⚪ Sistema' });
       }
     });
     return list;
